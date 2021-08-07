@@ -1,5 +1,5 @@
 export const constants = {
-    socketUrl: 'http://localhost:3001',
+    socketUrl: 'http://localhost:3000',
     socketNamespaces: {
         room: 'room',
         lobby: 'lobby'
@@ -8,6 +8,7 @@ export const constants = {
         USER_CONNECTED: 'userConnection',
         USER_DISCONNECTED: 'userDisconnection',
         JOIN_ROOM: 'joinRoom',
-        LOBBY_UPDATED: 'lobbyUpdated'
+        LOBBY_UPDATED: 'lobbyUpdated',
+        UPGRADE_USER_PERMISSION: 'upgradeUserPermission'
     }
 }

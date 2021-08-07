@@ -15,6 +15,79 @@ export default class RoomsController {
         this.#updateGlobalUserData(id);
     }
 
+    disconnect(socket) {
+        console.log('disconnect!!!', socket.id);
+        this.#logoutUser(socket);
+    }
+
+    #logoutUser(socket) {
+        const userId = socket.id;
+        const user = this.#users.get(userId);
+        const roomId = user.roomId;
+
+        /* Remove user from active users list. */
+        this.#users.delete(userId);
+
+        /* Know if user stay on dirty room. */
+        if (!this.rooms.has(roomId)) {
+            return;
+        }
+
+        const room = this.rooms.get(roomId);
+        const toBeRemoved = [...room.users].find(({ id }) => id === userId);
+
+        /* we remove the user from the room. */
+        room.users.delete(toBeRemoved);
+
+        /* If there are no more users in the room, we kill the room. */
+        if (!room.users.size) {
+            this.rooms.delete(roomId);
+            return;
+        }
+
+        const disconnectedUserWasAnOwner = userId === room.owner.id;
+        const onlyOneUserLeft = room.users.size === 1;
+
+        /* Validate if there is only one user or if the user was the owner of the room. */
+        if (onlyOneUserLeft || disconnectedUserWasAnOwner) {
+            room.owner = this.#getNewRoomOwner(room, socket);
+        }
+
+        /* Update the room at the end. */
+        this.rooms.set(roomId, room);
+
+        /* Notifies the room that the user logs out. */
+        socket.to(roomId).emit(constants.event.USER_DISCONNECTED, user);
+    }
+
+    #notifyUserProfileUpgrade(socket, roomId, user) {
+        socket.to(roomId).emit(constants.event.UPGRADE_USER_PERMISSION, user);
+    }
+
+    #getNewRoomOwner(room, socket) {
+        const users = [...room.users.values()];
+        const activeSpeakers = users.find(user => user.isSpeaker);
+        
+        /**
+         * If the person who disconnected was the owner, it passes the lead to the next one.
+         * If there are no speakers, it takes the oldest attendee (first prosition).
+         */
+        const [newOwner] = activeSpeakers ? [activeSpeakers] : users;
+        newOwner.isSpeaker = true;
+
+        const outdatedUser = this.#users.get(newOwner.id);
+        const updatedUser = new Attendee({
+            ...outdatedUser,
+            ...newOwner,
+        });
+
+        this.#users.set(newOwner.id, updatedUser);
+
+        this.#notifyUserProfileUpgrade(socket, room.id, newOwner);
+
+        return newOwner;
+    }
+
     joinRoom(socket, { user, room }) {
         const userId = user.id = socket.id;
         const roomId = room.id;
@@ -24,6 +97,7 @@ export default class RoomsController {
         const updatedRoom = this.#joinUserRoom(socket, updatedUserData, room);
 
         this.#notifyUsersOnRoom(socket, roomId, updatedUserData);
+
         this.#replyWithActiveUsers(socket, updatedRoom.users);
     }
 
