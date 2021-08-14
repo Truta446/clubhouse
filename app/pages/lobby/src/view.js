@@ -5,6 +5,7 @@ const roomGrid = document.getElementById('roomGrid');
 const btnCreateRoomWithTopic = document.getElementById('btnCreateRoomWithTopic');
 const btnCreateRoomWithoutTopic = document.getElementById('btnCreateRoomWithoutTopic');
 const txtTopic = document.getElementById('txtTopic');
+const imgUser = document.getElementById('imgUser');
 
 export default class View {
     constructor() {}

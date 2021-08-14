@@ -31,8 +31,23 @@ export default class RoomController {
     }
 
     _setupViewEvents() {
+        this.view.configureOnMicrophoneActivatedButton(this.onMicrophoneActivation());
+        this.view.configureLeaveButton();
+        this.view.configureClapButton(this.onClapPressed());
         this.view.updateUserImage(this.roomInfo.user);
         this.view.updateRoomTopic(this.roomInfo.room);
+    }
+
+    onMicrophoneActivation() {
+        return async () => {
+            await this.roomService.toggleAudioActivation();
+        }
+    }
+
+    onClapPressed() {
+        return () => {
+            this.socket.emit(constants.events.SPEAK_REQUEST, this.roomInfo.user);
+        }
     }
 
     _setupSocket() {
@@ -41,6 +56,7 @@ export default class RoomController {
             .setOnUserDisconnected(this.onUserDisconnected())
             .setOnRoomUpdated(this.onRoomUpdated())
             .setOnUserProfileUpgrade(this.onUserProfileUpgrade())
+            .setOnSpeakRequested(this.onSpeakRequested())
             .build();
     }
 
@@ -53,6 +69,14 @@ export default class RoomController {
             .setOnCallClose(this.onCallClose())
             .setOnStreamReceived(this.onStreamReceived())
             .build()
+    }
+
+    onSpeakRequested() {
+        return (data) => {
+            const user = new Attendee(data);
+            const result = prompt(`${user.username} pediu para falar!, Aceitar? 1 - sim; 0 - não`);
+            this.socket.emit(constants.events.SPEAK_ANSWER, { answer: !!Number(result), user });
+        }
     }
 
     onStreamReceived() {
@@ -114,9 +138,9 @@ export default class RoomController {
             const attendee = new Attendee(data);
             console.log('onUserProfileUpgrade', attendee);
 
-            this.roomService.upgradeUserPermission(attendee);
-
+            
             if (attendee.isSpeaker) {
+                this.roomService.upgradeUserPermission(attendee);
                 this.view.addAttendeeOnGrid(attendee, true);
             }
 

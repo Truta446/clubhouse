@@ -7,6 +7,8 @@ export default class RoomService {
         this.currentPeer = {};
         this.currentUser = {};
         this.currentStream = {};
+        this.isAudioActive = true;
+        
         this.peers = new Map();
     }
 
@@ -25,6 +27,11 @@ export default class RoomService {
         return this.currentUser;
     }
 
+    async toggleAudioActivation() {
+        this.isAudioActive = !this.isAudioActive;
+        this.switchAudioStreamSource({ realAudio: this.isAudioActive });
+    }
+
     upgradeUserPermission(user) {
         if (!user.isSpeaker) return;
 
@@ -33,10 +40,44 @@ export default class RoomService {
         if (!isCurrentUser) return;
 
         this.currentUser = user;
+
+        return this._reconnectAsSpeaker();
     }
 
     updateCurrentUserProfile(users) {
         this.currentUser = users.find(({ peerId }) => peerId === this.currentPeer.id);
+    }
+
+    async _reconnectAsSpeaker() {
+        return this.switchAudioStreamSource({ realAudio: true });
+    }
+
+    _reconnectPeers(stream) {
+        for(const peer of this.peers.values()) {
+            const peerId = peer.call.peer;
+            peer.call.close();
+            console.log('Calling', peerId);
+
+            this.currentPeer.call(peerId, stream);
+        }
+    }
+
+    async switchAudioStreamSource({ realAudio }) {
+        const userAudio = realAudio
+            ? await this.media.getUserAudio()
+            : this.media.createMediaStreamFake();
+
+        this.currentStream = new UserStream({
+            isFake: realAudio,
+            stream: userAudio
+        });
+
+        this.currentUser.isSpeaker = realAudio;
+
+        /**
+         * Need to end calls to call again.
+         */
+        this._reconnectPeers(this.currentStream.stream);
     }
 
     async getCurrentStream() {

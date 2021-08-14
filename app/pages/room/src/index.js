@@ -42,4 +42,7 @@ const dependencies = {
     roomService
 }
 
-await RoomController.initialize(dependencies);
+RoomController.initialize(dependencies)
+.catch(error => {
+    alert(error.message);
+});

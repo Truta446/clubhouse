@@ -19,4 +19,7 @@ const dependencies = {
     view: View
 }
 
-await LobbyController.initialize(dependencies);
+LobbyController.initialize(dependencies)
+.catch(error => {
+    alert(error.message);
+});

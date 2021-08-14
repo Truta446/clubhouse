@@ -41,17 +41,17 @@ Marque esse projeto com uma estrela 🌟
   - [x] Se o dono da sala desconectar, será removida
   - Users
     - Speaker
-      - [ ] Recebe notificação de attendees para se tornarem speakers
+      - [x] Recebe notificação de attendees para se tornarem speakers
       - [x] Atualizam a tela o upgrade de attendee para speaker
-      - [ ] Poderá deixar seu microfone mudo
+      - [x] Poderá deixar seu microfone mudo
       - Se dono da sala
-        - [ ] Pode aprovar attendees a virarem speakers
+        - [x] Pode aprovar attendees a virarem speakers
         - Ao se desconectar
           - [x] Promove o speaker mais velho da sala
           - [x] Se não houver speaker promove o attendee mais velho da sala
     - Attendee
-      - [ ] Pode ouvir speakers ativos
-      - [ ] Pode pedir upgrade de perfil ao dono da sala
+      - [x] Pode ouvir speakers ativos
+      - [x] Pode pedir upgrade de perfil ao dono da sala
         - Ao ser aprovado
-          - [ ] Reinicia todas as suas chamas ativas com os usuarios da sala
-          - [ ] Recebe as permissões do perfil speaker
+          - [x] Reinicia todas as suas chamadas ativas com os usuarios da sala
+          - [x] Recebe as permissões do perfil speaker
