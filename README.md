@@ -28,7 +28,7 @@ Marque esse projeto com uma estrela 🌟
 - Lobby
   - [ ] Se não houver dados do usuario em localStorage deve voltar para login
   - [x] Mostra todas as salas ativas
-  - [ ] Atualiza salas em realtime
+  - [x] Atualiza salas em realtime
   - [x] Pode criar uma sala sem topico
   - [x] Pode criar uma sala com topico
   - [x] Pode acessar salas ativas
@@ -36,7 +36,7 @@ Marque esse projeto com uma estrela 🌟
   - [ ] Se não houver dados do usuario em localStorage deve voltar para login
   - [x] Cria uma sala com um usuário dono
   - [x] Todos usuários futuros entram com perfil de attendees
-  - [ ] Notifica Lobby sobre atualizações na sala
+  - [x] Notifica Lobby sobre atualizações na sala
   - [x] Lista usuarios com perfis de speakers e attendees
   - [x] Se o dono da sala desconectar, será removida
   - Users

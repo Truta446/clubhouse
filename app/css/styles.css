@@ -430,3 +430,7 @@ a {
   display: none;
 }
 audio { display:none;}
+
+button, .pointer {
+  cursor: pointer;
+}
