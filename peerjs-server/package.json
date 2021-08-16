@@ -1,0 +1,20 @@
+{
+  "name": "peerjs-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "PORT=9000 yarn start",
+    "start": "npx peerjs --port $PORT --key peerjs --path /",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Juan Versolato Lopes",
+  "license": "ISC",
+  "dependencies": {
+    "peer": "0.6.1"
+  },
+  "engines": {
+    "node": "16"
+  }
+}
