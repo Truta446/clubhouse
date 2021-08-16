@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx http-server ."
+    "start": "npx http-server --cors -p $PORT ."
   },
   "devDependencies": {
     "http-server": "^0.12.3"
