@@ -6,21 +6,21 @@ import UserDB from "../../_shared/userDB.js";
 
 const user = UserDB.get();
 if (!Object.keys(user).length) {
-    View.redirectToLogin();
+  View.redirectToLogin();
 }
 
 const socketBuilder = new LobbySocketBuilder({
-    socketUrl: constants.socketUrl,
-    namespace: constants.socketNamespaces.lobby
+  socketUrl: constants.socketUrl,
+  namespace: constants.socketNamespaces.lobby
 });
 
 const dependencies = {
-    socketBuilder,
-    user,
-    view: View
+  socketBuilder,
+  user,
+  view: View
 }
 
 LobbyController.initialize(dependencies)
 .catch(error => {
-    alert(error.message);
+  console.error(error.message);
 });

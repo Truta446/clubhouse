@@ -4,41 +4,73 @@ const { firebaseConfig } = constants;
 
 const currentUser = UserDB.get();
 if (Object.keys(currentUser).length) {
-    redirectToLobby();
+  redirectToLobby();
 }
 
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
-var provider = new firebase.auth.GithubAuthProvider();
-provider.addScope('read:user');
+/**
+ * Github OAuth
+ */
+const githubProvider = new firebase.auth.GithubAuthProvider();
+githubProvider.addScope('read:user');
 
-const btnLogin = document.getElementById('btnLogin');
-btnLogin.addEventListener('click', onLogin({ provider, firebase }));
+const btnGithubLogin = document.getElementById('btnGithubLogin');
+btnGithubLogin.addEventListener('click', onGithubLogin({ githubProvider, firebase }));
 
-function onLogin({ provider, firebase }) {
-    return async () => {
-        try {
-            const result = await firebase
-                .auth()
-                .signInWithPopup(provider);
+function onGithubLogin({ githubProvider, firebase }) {
+  return async () => {
+    try {
+      const result = await firebase
+        .auth()
+        .signInWithPopup(githubProvider);
 
-            const { user } = result;
-            const userData = {
-                img: user.photoURL,
-                username: user.displayName,
-            }
+      const { user } = result;
+      const userData = {
+        img: user.photoURL,
+        username: user.displayName,
+      }
 
-            UserDB.insert(userData);
+      UserDB.insert(userData);
 
-            redirectToLobby()
-        } catch (error) {
-            alert(JSON.stringify(error));
-            console.error('error', error);
-        }
+      redirectToLobby();
+    } catch (error) {
+      console.error('error', error);
     }
+  }
+}
+
+/**
+ * Google OAuth
+ */
+const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+const btnGoogleLogin = document.getElementById('btnGoogleLogin');
+btnGoogleLogin.addEventListener('click', onGoogleLogin({ googleProvider, firebase }));
+
+function onGoogleLogin({ googleProvider, firebase }) {
+  return async () => {
+    try {
+      const result = await firebase
+        .auth()
+        .signInWithPopup(googleProvider);
+
+      const { user } = result;
+      const userData = {
+        img: user.photoURL,
+        username: user.displayName,
+      }
+
+      UserDB.insert(userData);
+
+      redirectToLobby();
+    } catch (error) {
+      console.error('error', error);
+    }
+  }
 }
 
 function redirectToLobby() {
-    window.location = constants.pages.lobby;
+  window.location = constants.pages.lobby;
 }

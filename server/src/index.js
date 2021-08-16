@@ -10,39 +10,39 @@ const server = await socketServer.start();
 const roomsPubSub = new Events();
 
 const roomsController = new RoomsController({
-    roomsPubSub
+  roomsPubSub
 });
 const lobbyController = new LobbyController({
-    activeRooms: roomsController.rooms,
-    roomsListener: roomsPubSub
+  activeRooms: roomsController.rooms,
+  roomsListener: roomsPubSub
 });
 
 const namespaces = {
-    room: {
-        controller: roomsController,
-        eventEmitter: new Events()
-    },
-    lobby: {
-        controller: lobbyController,
-        eventEmitter: roomsPubSub
-    }
+  room: {
+    controller: roomsController,
+    eventEmitter: new Events()
+  },
+  lobby: {
+    controller: lobbyController,
+    eventEmitter: roomsPubSub
+  }
 }
 
 const routeConfig = Object.entries(namespaces)
-    .map(([namespace, { controller, eventEmitter }]) => {
-        const controllerEvents = controller.getEvents();
-        eventEmitter.on(
-            constants.event.USER_CONNECTED,
-            controller.onNewConnection.bind(controller)
-        );
+  .map(([namespace, { controller, eventEmitter }]) => {
+    const controllerEvents = controller.getEvents();
+    eventEmitter.on(
+      constants.event.USER_CONNECTED,
+      controller.onNewConnection.bind(controller)
+    );
 
-        return {
-            [namespace]: {
-                events: controllerEvents,
-                eventEmitter
-            }
-        }
-    });
+    return {
+      [namespace]: {
+        events: controllerEvents,
+        eventEmitter
+      }
+    }
+  });
 
 socketServer.attachEvents({ routeConfig });
 

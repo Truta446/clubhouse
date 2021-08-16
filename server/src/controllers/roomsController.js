@@ -62,12 +62,10 @@ export default class RoomsController {
 
     onNewConnection(socket) {
         const { id } = socket;
-        console.log('connection stablished with', id);
         this.#updateGlobalUserData(id);
     }
 
     disconnect(socket) {
-        console.log('disconnect!!!', socket.id);
         this.#logoutUser(socket);
     }
 
@@ -118,7 +116,7 @@ export default class RoomsController {
     #getNewRoomOwner(room, socket) {
         const users = [...room.users.values()];
         const activeSpeakers = users.find(user => user.isSpeaker);
-        
+
         /**
          * If the person who disconnected was the owner, it passes the lead to the next one.
          * If there are no speakers, it takes the oldest attendee (first prosition).

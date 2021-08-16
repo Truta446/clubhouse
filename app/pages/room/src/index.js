@@ -9,7 +9,7 @@ import Media from '../../_shared/media.js';
 
 const user = UserDB.get();
 if (!Object.keys(user).length) {
-    View.redirectToLogin();
+  View.redirectToLogin();
 }
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -17,7 +17,7 @@ const keys = ['id', 'topic'];
 const urlData = keys.map((key) => [key, urlParams.get(key)]);
 
 const room = {
-    ...Object.fromEntries(urlData)
+  ...Object.fromEntries(urlData)
 }
 
 const roomInfo = { user, room };
@@ -27,23 +27,23 @@ const peerBuilder = new PeerBuilder({
 });
 
 const socketBuilder = new RoomSocketBuilder({
-    socketUrl: constants.socketUrl,
-    namespace: constants.socketNamespaces.room
+  socketUrl: constants.socketUrl,
+  namespace: constants.socketNamespaces.room
 });
 
 const roomService = new RoomService({
-    media: Media
+  media: Media
 });
 
 const dependencies = {
-    socketBuilder,
-    roomInfo,
-    view: View,
-    peerBuilder,
-    roomService
+  socketBuilder,
+  roomInfo,
+  view: View,
+  peerBuilder,
+  roomService
 }
 
 RoomController.initialize(dependencies)
 .catch(error => {
-    alert(error.message);
+  console.error(error.message);
 });
