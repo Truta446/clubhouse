@@ -148,4 +148,8 @@ export default class View {
     static configureLeaveButton() {
         btnLeave.addEventListener('click', () => View._redirectToLobby());
     }
+
+    static redirectToLogin() {
+        window.location = constants.pages.login;
+    }
 }

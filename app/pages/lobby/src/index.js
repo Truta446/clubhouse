@@ -2,11 +2,12 @@ import LobbySocketBuilder from "./util/lobbySocketBuilder.js";
 import LobbyController from "./controller.js";
 import View from "./view.js";
 import { constants } from "../../_shared/constants.js";
+import UserDB from "../../_shared/userDB.js";
 
-const user = {
-    img: 'https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/muslim_man_avatar-512.png',
-    username: 'Juan Versolato ' + Date.now()
-};
+const user = UserDB.get();
+if (!Object.keys(user).length) {
+    View.redirectToLogin();
+}
 
 const socketBuilder = new LobbySocketBuilder({
     socketUrl: constants.socketUrl,
